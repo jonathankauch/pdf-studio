@@ -8,6 +8,35 @@ import type { Range } from './types'
 
 const APPLE_FONT = '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif'
 
+function FileNameTooltip({ name }: { name: string }) {
+  const [visible, setVisible] = useState(false)
+  return (
+    <span
+      className="relative text-sm truncate max-w-xs"
+      style={{ color: '#86868b' }}
+      onMouseEnter={() => setVisible(true)}
+      onMouseLeave={() => setVisible(false)}
+    >
+      {name}
+      {visible && (
+        <span
+          className="absolute left-0 top-full mt-2 px-2.5 py-1.5 rounded-lg text-xs whitespace-nowrap z-50"
+          style={{
+            background: 'rgba(30,30,32,0.92)',
+            color: '#fff',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+            pointerEvents: 'none',
+          }}
+        >
+          {name}
+        </span>
+      )}
+    </span>
+  )
+}
+
 export default function App() {
   const { doc, sourceBytes, pageCount, thumbnails, loading, fileName, loadFile } = usePdfDocument()
   const [pageOrder, setPageOrder] = useState<number[]>([])
@@ -84,6 +113,7 @@ export default function App() {
             backdropFilter: 'saturate(180%) blur(20px)',
             WebkitBackdropFilter: 'saturate(180%) blur(20px)',
             borderBottom: '1px solid rgba(0,0,0,0.08)',
+            overflow: 'visible',
           }}
         >
           <button
@@ -102,15 +132,7 @@ export default function App() {
 
           <div className="w-px h-4 mx-1" style={{ background: '#d2d2d7' }} />
 
-          <span className="relative group text-sm truncate max-w-xs" style={{ color: '#86868b' }}>
-            {fileName}
-            <span
-              className="pointer-events-none absolute left-0 top-full mt-2 px-2.5 py-1.5 rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50"
-              style={{ background: 'rgba(30,30,32,0.88)', color: '#fff', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', boxShadow: '0 4px 12px rgba(0,0,0,0.25)' }}
-            >
-              {fileName}
-            </span>
-          </span>
+          <FileNameTooltip name={fileName} />
 
           {loading && (
             <span className="text-xs animate-pulse" style={{ color: '#0071e3' }}>Rendering…</span>
