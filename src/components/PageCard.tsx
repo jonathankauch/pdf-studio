@@ -19,44 +19,67 @@ export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, 
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isDragging ? 0.4 : 1,
+        opacity: isDragging ? 0.35 : 1,
+        borderRadius: 12,
+        overflow: 'hidden',
+        border: selected ? '2px solid #0071e3' : '2px solid transparent',
+        boxShadow: selected
+          ? '0 0 0 3px rgba(0,113,227,0.18), 0 4px 16px rgba(0,0,0,0.10)'
+          : '0 1px 4px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04)',
+        background: '#fff',
+        cursor: 'pointer',
+        userSelect: 'none',
+        transition: (transition ?? '') + ', box-shadow 0.15s, border-color 0.15s',
       }}
       {...attributes}
       {...listeners}
       onClick={onClick}
-      className={`relative cursor-pointer rounded-xl overflow-hidden border-2 transition-all select-none ${
-        selected
-          ? 'border-blue-500 shadow-lg shadow-blue-100 scale-[1.03]'
-          : 'border-gray-200 hover:border-gray-400'
-      }`}
     >
       {thumbnail ? (
         <img
           src={thumbnail}
           alt={`Page ${displayNumber}`}
-          className="w-full block bg-white"
+          className="w-full block"
           draggable={false}
         />
       ) : (
-        <div className="w-full aspect-[3/4] bg-gray-100 animate-pulse" />
+        <div className="w-full aspect-[3/4] animate-pulse" style={{ background: '#f5f5f7' }} />
       )}
 
-      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent pt-4 pb-1 text-center">
-        <span className="text-white text-xs font-medium">{displayNumber}</span>
+      {/* Page number */}
+      <div
+        className="text-center py-1.5 text-xs font-medium"
+        style={{
+          background: selected ? '#0071e3' : '#f5f5f7',
+          color: selected ? '#fff' : '#86868b',
+          borderTop: '1px solid rgba(0,0,0,0.05)',
+          transition: 'background 0.15s, color 0.15s',
+        }}
+      >
+        {displayNumber}
       </div>
 
+      {/* Range color dots */}
       {rangeColors.length > 0 && (
-        <div className="absolute top-1.5 right-1.5 flex gap-1">
+        <div className="absolute top-2 right-2 flex gap-1">
           {rangeColors.map((color, i) => (
-            <div key={i} className="w-2.5 h-2.5 rounded-full ring-1 ring-white" style={{ background: color }} />
+            <div
+              key={i}
+              className="w-2.5 h-2.5 rounded-full"
+              style={{ background: color, boxShadow: '0 0 0 1.5px rgba(255,255,255,0.9)' }}
+            />
           ))}
         </div>
       )}
 
+      {/* Checkmark */}
       {selected && (
-        <div className="absolute top-1.5 left-1.5 w-5 h-5 bg-blue-500 rounded-full flex items-center justify-center">
-          <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+        <div
+          className="absolute top-2 left-2 w-5 h-5 rounded-full flex items-center justify-center"
+          style={{ background: '#0071e3', boxShadow: '0 1px 4px rgba(0,113,227,0.4)' }}
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <polyline points="2,5.5 4,7.5 8,3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
       )}

@@ -17,7 +17,7 @@ interface Props {
 function parsePageInput(raw: string, max: number): number[] {
   const pages: number[] = []
   for (const part of raw.split(',').map(s => s.trim()).filter(Boolean)) {
-    const match = part.match(/^(\d+)\s*-\s*(\d+)$/)
+    const match = part.match(/^(\d+)\s*[-–]\s*(\d+)$/)
     if (match) {
       const lo = Math.min(Number(match[1]), Number(match[2]))
       const hi = Math.max(Number(match[1]), Number(match[2]))
@@ -52,13 +52,11 @@ export function RangeList({
   }
 
   function updatePages(id: string, raw: string) {
-    const pages = parsePageInput(raw, totalPages)
-    onRangesChange(ranges.map(r => r.id === id ? { ...r, pages } : r))
+    onRangesChange(ranges.map(r => r.id === id ? { ...r, pages: parsePageInput(raw, totalPages) } : r))
   }
 
   async function download(range: Range) {
     if (!sourceBytes) return
-    // Preserve display order: filter pageOrder to only pages in this range
     const orderedIndices = pageOrder.filter(i => range.pages.includes(i))
     const bytes = await splitPdf(sourceBytes, orderedIndices)
     const base = fileName.replace(/\.pdf$/i, '')
@@ -66,22 +64,29 @@ export function RangeList({
   }
 
   return (
-    <div className="flex flex-col gap-3 h-full overflow-hidden">
-      <div className="flex items-center justify-between flex-shrink-0">
-        <h2 className="font-semibold text-gray-800 text-sm">Output ranges</h2>
-        <span className="text-xs text-gray-400">{ranges.length} range{ranges.length !== 1 ? 's' : ''}</span>
+    <div className="flex flex-col gap-3 h-full overflow-hidden" style={{ fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif' }}>
+      <div className="flex items-center justify-between flex-shrink-0 px-1">
+        <span className="text-sm font-semibold" style={{ color: '#1d1d1f' }}>Output ranges</span>
+        <span className="text-xs" style={{ color: '#adadb8' }}>{ranges.length} range{ranges.length !== 1 ? 's' : ''}</span>
       </div>
 
       {selectedPages.size > 0 && (
         <button
           onClick={onAddFromSelection}
-          className="flex-shrink-0 text-sm border-2 border-blue-400 text-blue-600 rounded-xl py-2 hover:bg-blue-50 transition-colors font-medium"
+          className="flex-shrink-0 text-sm py-2 rounded-full font-medium transition-all active:scale-95"
+          style={{
+            border: '1.5px solid #0071e3',
+            color: '#0071e3',
+            background: 'transparent',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0,113,227,0.06)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         >
           + New range from {selectedPages.size} selected
         </button>
       )}
 
-      <div className="flex-1 overflow-y-auto space-y-3 pr-0.5">
+      <div className="flex-1 overflow-y-auto space-y-2.5 pr-0.5">
         {ranges.map((range, i) => (
           <RangeItem
             key={range.id}
@@ -95,17 +100,24 @@ export function RangeList({
           />
         ))}
         {ranges.length === 0 && (
-          <div className="text-center py-10 text-gray-400">
-            <div className="text-3xl mb-2">✂️</div>
-            <p className="text-sm">No ranges yet.</p>
-            <p className="text-xs mt-1">Select pages or add one below.</p>
+          <div className="text-center py-10">
+            <div className="text-4xl mb-3" style={{ opacity: 0.25 }}>✂️</div>
+            <p className="text-sm" style={{ color: '#adadb8' }}>No ranges yet.</p>
+            <p className="text-xs mt-1" style={{ color: '#d2d2d7' }}>Select pages or add one below.</p>
           </div>
         )}
       </div>
 
       <button
         onClick={addRange}
-        className="flex-shrink-0 w-full border-2 border-dashed border-gray-300 text-gray-500 rounded-xl py-3 text-sm hover:border-blue-400 hover:text-blue-600 transition-colors"
+        className="flex-shrink-0 w-full py-2.5 rounded-full text-sm font-medium transition-all active:scale-95"
+        style={{
+          border: '1.5px dashed #d2d2d7',
+          color: '#86868b',
+          background: 'transparent',
+        }}
+        onMouseEnter={e => { e.currentTarget.style.borderColor = '#0071e3'; e.currentTarget.style.color = '#0071e3' }}
+        onMouseLeave={e => { e.currentTarget.style.borderColor = '#d2d2d7'; e.currentTarget.style.color = '#86868b' }}
       >
         + Add range
       </button>
