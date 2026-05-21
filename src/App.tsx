@@ -88,22 +88,21 @@ export default function App() {
         >
           <button
             onClick={() => window.location.reload()}
-            className="flex items-center justify-center w-7 h-7 rounded-full transition-colors"
+            className="flex items-center gap-2 rounded-lg px-2 py-1 transition-colors"
             style={{ color: '#86868b' }}
             onMouseEnter={e => (e.currentTarget.style.background = '#f0f0f0')}
             onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
-            title="Open new PDF"
+            title="Back to home"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6"/>
             </svg>
+            <span className="font-semibold text-sm" style={{ color: '#1d1d1f' }}>PDF Studio</span>
           </button>
-
-          <span className="font-semibold text-sm" style={{ color: '#1d1d1f' }}>PDF Studio</span>
 
           <div className="w-px h-4 mx-1" style={{ background: '#d2d2d7' }} />
 
-          <span className="text-sm truncate max-w-xs" style={{ color: '#86868b' }}>{fileName}</span>
+          <span className="text-sm truncate max-w-xs" style={{ color: '#86868b' }} title={fileName}>{fileName}</span>
 
           {loading && (
             <span className="text-xs animate-pulse" style={{ color: '#0071e3' }}>Rendering…</span>
