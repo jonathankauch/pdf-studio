@@ -16,6 +16,22 @@ export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, 
   const [hovered, setHovered] = useState(false)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
 
+  const primaryRangeColor = rangeColors[0] ?? null
+
+  // Border: blue when selected, range color when in a range, subtle grey otherwise
+  const border = selected
+    ? '2.5px solid #0071e3'
+    : primaryRangeColor
+      ? `2.5px solid ${primaryRangeColor}`
+      : '2px solid rgba(0,0,0,0.07)'
+
+  // Box shadow: blue glow when selected, range glow when in range
+  const boxShadow = selected
+    ? `0 0 0 3px rgba(0,113,227,0.18), 0 4px 16px rgba(0,0,0,0.10)`
+    : primaryRangeColor
+      ? `0 0 0 3px ${primaryRangeColor}28, 0 2px 8px rgba(0,0,0,0.08)`
+      : '0 1px 4px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04)'
+
   return (
     <div
       ref={setNodeRef}
@@ -25,10 +41,8 @@ export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, 
         opacity: isDragging ? 0.35 : 1,
         borderRadius: 12,
         overflow: 'hidden',
-        border: selected ? '2px solid #0071e3' : '2px solid transparent',
-        boxShadow: selected
-          ? '0 0 0 3px rgba(0,113,227,0.18), 0 4px 16px rgba(0,0,0,0.10)'
-          : '0 1px 4px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04)',
+        border,
+        boxShadow,
         background: '#fff',
         cursor: 'pointer',
         userSelect: 'none',
@@ -51,11 +65,11 @@ export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, 
         <div className="w-full aspect-[3/4] animate-pulse" style={{ background: '#f5f5f7' }} />
       )}
 
-      {/* Magnify button — shown on hover */}
+      {/* Magnify button — top right, shown on hover */}
       {hovered && thumbnail && (
         <button
           onClick={e => { e.stopPropagation(); onZoom() }}
-          className="absolute bottom-8 right-2 flex items-center justify-center w-7 h-7 rounded-full transition-all"
+          className="absolute top-2 right-2 flex items-center justify-center w-7 h-7 rounded-full transition-all active:scale-90"
           style={{
             background: 'rgba(0,0,0,0.52)',
             backdropFilter: 'blur(6px)',
@@ -78,20 +92,24 @@ export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, 
       <div
         className="text-center py-1.5 text-xs font-medium"
         style={{
-          background: selected ? '#0071e3' : '#f5f5f7',
-          color: selected ? '#fff' : '#86868b',
-          borderTop: '1px solid rgba(0,0,0,0.05)',
+          background: selected ? '#0071e3' : primaryRangeColor ? `${primaryRangeColor}18` : '#f5f5f7',
+          color: selected ? '#fff' : primaryRangeColor ?? '#86868b',
+          borderTop: `1px solid ${primaryRangeColor ? `${primaryRangeColor}30` : 'rgba(0,0,0,0.05)'}`,
           transition: 'background 0.15s, color 0.15s',
         }}
       >
         {displayNumber}
       </div>
 
-      {/* Range color stripe along the top edge */}
-      {rangeColors.length > 0 && (
-        <div className="absolute top-0 left-0 right-0 flex" style={{ height: 4 }}>
+      {/* Multi-range color dots (when in more than one range) */}
+      {rangeColors.length > 1 && (
+        <div className="absolute bottom-7 left-2 flex gap-1">
           {rangeColors.map((color, i) => (
-            <div key={i} className="flex-1" style={{ background: color }} />
+            <div
+              key={i}
+              className="w-2 h-2 rounded-full"
+              style={{ background: color, boxShadow: '0 0 0 1.5px rgba(255,255,255,0.9)' }}
+            />
           ))}
         </div>
       )}
