@@ -102,7 +102,15 @@ export default function App() {
 
           <div className="w-px h-4 mx-1" style={{ background: '#d2d2d7' }} />
 
-          <span className="text-sm truncate max-w-xs" style={{ color: '#86868b' }} title={fileName}>{fileName}</span>
+          <span className="relative group text-sm truncate max-w-xs" style={{ color: '#86868b' }}>
+            {fileName}
+            <span
+              className="pointer-events-none absolute left-0 top-full mt-2 px-2.5 py-1.5 rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-150 z-50"
+              style={{ background: 'rgba(30,30,32,0.88)', color: '#fff', backdropFilter: 'blur(8px)', WebkitBackdropFilter: 'blur(8px)', boxShadow: '0 4px 12px rgba(0,0,0,0.25)' }}
+            >
+              {fileName}
+            </span>
+          </span>
 
           {loading && (
             <span className="text-xs animate-pulse" style={{ color: '#0071e3' }}>Rendering…</span>
