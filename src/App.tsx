@@ -116,7 +116,7 @@ export default function App() {
             )}
           </span>
 
-          <span className="hidden lg:block text-xs" style={{ color: '#d2d2d7' }}>
+          <span className="hidden lg:block text-xs" style={{ color: '#86868b' }}>
             Click · ⇧ range · ⌘ add · Drag to reorder
           </span>
         </header>

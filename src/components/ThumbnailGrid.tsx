@@ -45,7 +45,7 @@ export function ThumbnailGrid({ pageOrder, thumbnails, selectedPages, ranges, on
       <SortableContext items={pageOrder.map(String)} strategy={rectSortingStrategy}>
         <div
           className="grid gap-3"
-          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))' }}
+          style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(max(15vw, 160px), 1fr))' }}
         >
           {pageOrder.map((origIdx, position) => (
             <PageCard
