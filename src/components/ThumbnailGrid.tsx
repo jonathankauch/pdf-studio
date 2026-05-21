@@ -19,9 +19,10 @@ interface Props {
   ranges: Range[]
   onReorder: (newOrder: number[]) => void
   onSelect: (origIdx: number, e: React.MouseEvent) => void
+  onZoom: (displayIndex: number) => void
 }
 
-export function ThumbnailGrid({ pageOrder, thumbnails, selectedPages, ranges, onReorder, onSelect }: Props) {
+export function ThumbnailGrid({ pageOrder, thumbnails, selectedPages, ranges, onReorder, onSelect, onZoom }: Props) {
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
   )
@@ -44,7 +45,7 @@ export function ThumbnailGrid({ pageOrder, thumbnails, selectedPages, ranges, on
     <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
       <SortableContext items={pageOrder.map(String)} strategy={rectSortingStrategy}>
         <div
-          className="grid gap-3"
+          className="grid gap-4"
           style={{ gridTemplateColumns: 'repeat(auto-fill, minmax(max(15vw, 160px), 1fr))' }}
         >
           {pageOrder.map((origIdx, position) => (
@@ -56,6 +57,7 @@ export function ThumbnailGrid({ pageOrder, thumbnails, selectedPages, ranges, on
               selected={selectedPages.has(origIdx)}
               rangeColors={getRangeColors(origIdx)}
               onClick={e => onSelect(origIdx, e)}
+              onZoom={() => onZoom(position)}
             />
           ))}
         </div>

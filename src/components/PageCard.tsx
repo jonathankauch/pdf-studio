@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
@@ -8,9 +9,11 @@ interface Props {
   selected: boolean
   rangeColors: string[]
   onClick: (e: React.MouseEvent) => void
+  onZoom: () => void
 }
 
-export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, onClick }: Props) {
+export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, onClick, onZoom }: Props) {
+  const [hovered, setHovered] = useState(false)
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id })
 
   return (
@@ -29,7 +32,10 @@ export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, 
         background: '#fff',
         cursor: 'pointer',
         userSelect: 'none',
+        position: 'relative',
       }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
       {...attributes}
       {...listeners}
       onClick={onClick}
@@ -45,7 +51,30 @@ export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, 
         <div className="w-full aspect-[3/4] animate-pulse" style={{ background: '#f5f5f7' }} />
       )}
 
-      {/* Page number */}
+      {/* Magnify button — shown on hover */}
+      {hovered && thumbnail && (
+        <button
+          onClick={e => { e.stopPropagation(); onZoom() }}
+          className="absolute bottom-8 right-2 flex items-center justify-center w-7 h-7 rounded-full transition-all"
+          style={{
+            background: 'rgba(0,0,0,0.52)',
+            backdropFilter: 'blur(6px)',
+            WebkitBackdropFilter: 'blur(6px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            color: '#fff',
+          }}
+          title="Preview page"
+        >
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="11" cy="11" r="7"/>
+            <line x1="16.5" y1="16.5" x2="22" y2="22"/>
+            <line x1="11" y1="8" x2="11" y2="14"/>
+            <line x1="8" y1="11" x2="14" y2="11"/>
+          </svg>
+        </button>
+      )}
+
+      {/* Page number bar */}
       <div
         className="text-center py-1.5 text-xs font-medium"
         style={{
@@ -58,15 +87,11 @@ export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, 
         {displayNumber}
       </div>
 
-      {/* Range color dots */}
+      {/* Range color stripe along the top edge */}
       {rangeColors.length > 0 && (
-        <div className="absolute top-2 right-2 flex gap-1">
+        <div className="absolute top-0 left-0 right-0 flex" style={{ height: 4 }}>
           {rangeColors.map((color, i) => (
-            <div
-              key={i}
-              className="w-2.5 h-2.5 rounded-full"
-              style={{ background: color, boxShadow: '0 0 0 1.5px rgba(255,255,255,0.9)' }}
-            />
+            <div key={i} className="flex-1" style={{ background: color }} />
           ))}
         </div>
       )}

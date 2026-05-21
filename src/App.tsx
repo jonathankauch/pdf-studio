@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { DropZone } from './components/DropZone'
 import { ThumbnailGrid } from './components/ThumbnailGrid'
 import { RangeList } from './components/RangeList'
+import { PageModal } from './components/PageModal'
 import { usePdfDocument } from './hooks/usePdfDocument'
 import type { Range } from './types'
 
@@ -13,6 +14,7 @@ export default function App() {
   const [selectedPages, setSelectedPages] = useState<Set<number>>(new Set())
   const [ranges, setRanges] = useState<Range[]>([])
   const [lastSelected, setLastSelected] = useState<number | null>(null)
+  const [zoomIndex, setZoomIndex] = useState<number | null>(null)
 
   useEffect(() => {
     if (pageCount > 0) {
@@ -129,11 +131,21 @@ export default function App() {
             ranges={ranges}
             onReorder={setPageOrder}
             onSelect={handleSelect}
+            onZoom={setZoomIndex}
           />
         </div>
       </div>
 
       {/* Sidebar */}
+      {zoomIndex !== null && doc && (
+        <PageModal
+          doc={doc}
+          pageOrder={effectiveOrder}
+          displayIndex={zoomIndex}
+          onClose={() => setZoomIndex(null)}
+        />
+      )}
+
       <div
         className="flex-shrink-0 flex flex-col p-4"
         style={{
