@@ -54,7 +54,7 @@ export function DropZone({ onFile }: Props) {
       </div>
 
       <footer className="w-full py-4 text-center text-xs text-gray-400">
-        PDF Studio™ &copy; {new Date().getFullYear()} — All rights reserved.
+        PDF Studio™ &copy; {new Date().getFullYear()} Jonathan Kauch — All rights reserved.
       </footer>
     </div>
   )
