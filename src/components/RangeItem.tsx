@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { Range } from '../types'
 
 interface Props {
@@ -29,13 +29,14 @@ function toRangeString(pages: number[]): string {
 
 export function RangeItem({ range, color, totalPages, onRemove, onDownload, onNameChange, onPagesInput }: Props) {
   const [downloading, setDownloading] = useState(false)
-  const externalStr = toRangeString(range.pages)
-  const [inputVal, setInputVal] = useState(externalStr)
-  const [lastExternal, setLastExternal] = useState(externalStr)
-  if (externalStr !== lastExternal) {
-    setLastExternal(externalStr)
-    setInputVal(externalStr)
-  }
+  const [inputVal, setInputVal] = useState(() => toRangeString(range.pages))
+  const [focused, setFocused] = useState(false)
+
+  // Sync display only when external pages change and the user isn't actively typing
+  const pagesKey = range.pages.join(',')
+  useEffect(() => {
+    if (!focused) setInputVal(toRangeString(range.pages))
+  }, [pagesKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleDownload() {
     setDownloading(true)
@@ -89,8 +90,8 @@ export function RangeItem({ range, color, totalPages, onRemove, onDownload, onNa
           placeholder={`1–${totalPages}`}
           value={inputVal}
           onChange={e => { setInputVal(e.target.value); onPagesInput(e.target.value) }}
-          onFocus={e => (e.currentTarget.style.border = '1px solid #0071e3')}
-          onBlur={e => (e.currentTarget.style.border = '1px solid rgba(0,0,0,0.07)')}
+          onFocus={e => { setFocused(true); e.currentTarget.style.border = '1px solid #0071e3' }}
+          onBlur={e => { setFocused(false); e.currentTarget.style.border = '1px solid rgba(0,0,0,0.07)' }}
         />
       </div>
 
