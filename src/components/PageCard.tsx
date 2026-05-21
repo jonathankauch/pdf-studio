@@ -18,7 +18,7 @@ export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, 
       ref={setNodeRef}
       style={{
         transform: CSS.Transform.toString(transform),
-        transition,
+        transition: [transition, 'box-shadow 0.15s', 'border-color 0.15s'].filter(Boolean).join(', '),
         opacity: isDragging ? 0.35 : 1,
         borderRadius: 12,
         overflow: 'hidden',
@@ -29,7 +29,6 @@ export function PageCard({ id, thumbnail, displayNumber, selected, rangeColors, 
         background: '#fff',
         cursor: 'pointer',
         userSelect: 'none',
-        transition: (transition ?? '') + ', box-shadow 0.15s, border-color 0.15s',
       }}
       {...attributes}
       {...listeners}
