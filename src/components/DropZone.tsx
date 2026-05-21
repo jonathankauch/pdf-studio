@@ -43,6 +43,12 @@ export function DropZone({ onFile }: Props) {
           />
         </label>
         <p className="text-sm text-gray-400 mt-4">or drag and drop here</p>
+        <div className="mt-8 pt-6 border-t border-gray-100 flex items-center justify-center gap-1.5 text-xs text-gray-400">
+          <svg className="w-3.5 h-3.5 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+          <span>Your file never leaves your device — everything runs locally in your browser, nothing is uploaded or tracked.</span>
+        </div>
       </div>
     </div>
   )
