@@ -26,11 +26,6 @@ export function DropZone({ onFile }: Props) {
       className="min-h-screen flex flex-col"
       style={{ background: '#f5f5f7', fontFamily: '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif' }}
     >
-      {/* Nav bar */}
-      <nav className="flex items-center justify-center py-5">
-        <span className="text-base font-semibold tracking-tight" style={{ color: '#1d1d1f' }}>PDF Studio</span>
-      </nav>
-
       {/* Hero */}
       <div className="flex-1 flex flex-col items-center justify-center px-4 pb-16">
         <div
